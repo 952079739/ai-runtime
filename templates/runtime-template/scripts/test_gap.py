@@ -28,22 +28,32 @@ def extract_core_symbols(project_dir: Path) -> list[dict]:
         module = skill_md.parent.name
         content = skill_md.read_text(encoding="utf-8", errors="replace")
 
-        in_table = False
-        for line in content.splitlines():
-            line = line.strip()
-            if line.startswith("|") and ("Symbol" in line or "Entry" in line):
-                in_table = True
+        in_key_symbols = False
+        for raw_line in content.splitlines():
+            line = raw_line.strip()
+
+            # Detect "Key Symbols" table header
+            if line.startswith("|") and "Symbol" in line and "Type" in line:
+                in_key_symbols = True
                 continue
-            if in_table and line.startswith("|-"):
+            if in_key_symbols and line.startswith("|-"):
                 continue
-            if in_table and line.startswith("|") and not line.startswith("| "):
-                parts = [p.strip() for p in line.split("|")]
+            if in_key_symbols and line.startswith("|"):
+                parts = [p.strip() for p in raw_line.split("|")]
                 if len(parts) >= 2 and parts[1]:
                     name = parts[1].strip("`*_ ")
-                    if name and not name.startswith("#") and len(name) > 1:
+                    if name and len(name) > 1 and not name.startswith("#"):
                         symbols.append({"symbol": name, "module": module})
-            elif in_table and not line.startswith("|"):
-                in_table = False
+            elif in_key_symbols and not line.startswith("|"):
+                in_key_symbols = False
+
+            # Parse Entry Points (bullet list: - **`name`** (Type) — file)
+            if line.startswith("- **`"):
+                end = line.find("`**")
+                if end > 4:
+                    name = line[4:end].strip("`*_ ")
+                    if name and len(name) > 1:
+                        symbols.append({"symbol": name, "module": module})
 
     return symbols
 
