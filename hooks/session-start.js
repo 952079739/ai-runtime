@@ -15,15 +15,6 @@ function checkCmd(cmd) {
     }
 }
 
-function checkPythonPackage(pkg) {
-    try {
-        execSync(`python -c "import ${pkg}"`, { stdio: 'pipe', timeout: 15000 });
-        return { name: pkg, ok: true };
-    } catch {
-        return { name: pkg, ok: false };
-    }
-}
-
 function checkQdrant() {
     try {
         const out = execSync('docker ps --filter name=qdrant --format "{{.Names}}"', { stdio: 'pipe', timeout: 10000 }).toString().trim();
@@ -43,13 +34,7 @@ const systemTools = [
 ];
 const sysResults = systemTools.map(t => ({ ...t, ...checkCmd(t.cmd) }));
 
-const pyPackages = [
-    'graphifyy', 'networkx', 'qdrant_client', 'sentence_transformers',
-    'faiss', 'numpy', 'pandas', 'orjson', 'rich', 'typer', 'pydantic',
-    'git', 'watchdog', 'tqdm', 'tree_sitter', 'langchain', 'langchain_community',
-    'openai', 'anthropic',
-];
-const pyResults = pyPackages.map(checkPythonPackage);
+const pythonOk = checkCmd('python --version');
 
 const qdrant = checkQdrant();
 
@@ -117,15 +102,13 @@ if (!sysOk) {
     console.log(`  → Missing: ${missing}. Please install before running /bootstrap.`);
 }
 
-// Python packages
-const pyOk = pyResults.every(r => r.ok);
-const pyPassed = pyResults.filter(r => r.ok).length;
-console.log(`  ${pyOk ? 'PASS' : 'WARN'}  Python packages: ${pyPassed}/${pyPackages.length}`);
-if (!pyOk) {
-    const missingPy = pyResults.filter(r => !r.ok).map(r => r.name).join(', ');
-    console.log(`  → Missing packages: ${missingPy}`);
-    console.log('  → Run: pip install -r requirements.txt (from AI-Runtime template)');
-}
+// Python
+console.log(`  ${pythonOk ? 'PASS' : 'FAIL'}  python`);
+console.log('  Required (pip install):');
+console.log('    graphify networkx qdrant-client sentence-transformers faiss-cpu');
+console.log('    numpy pandas orjson rich typer pydantic gitpython watchdog');
+console.log('    tqdm tree-sitter tree-sitter-java langchain langchain-community');
+console.log('    openai anthropic');
 
 // Qdrant
 console.log(`  ${qdrant.ok ? 'PASS' : 'WARN'}  Qdrant vector DB`);
