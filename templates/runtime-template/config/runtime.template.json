@@ -1,0 +1,11 @@
+{
+  "project_name": "{PROJECT_NAME}",
+  "project_id": "{PROJECT_ID}",
+  "source_path": "{SOURCE_PATH}",
+  "qdrant_collection": "{PROJECT_ID}",
+  "knowledge_version": 1,
+  "incremental_mode": true,
+  "git_remote": "{GIT_REMOTE}",
+  "branch": "{BRANCH}",
+  "template_version": "2.0"
+}

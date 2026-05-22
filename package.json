@@ -1,0 +1,24 @@
+{
+  "name": "ai-runtime",
+  "version": "1.0.0",
+  "description": "AI-Runtime: automated project knowledge infrastructure managed by Claude. GitNexus + Graphify dual-engine builds, test gap analysis, and structured refactoring workflow.",
+  "author": "AI-Runtime",
+  "license": "MIT",
+  "main": "hooks/session-start.js",
+  "hooks": [
+    {
+      "event": "SessionStart",
+      "script": "hooks/session-start.js"
+    }
+  ],
+  "skills": [
+    "skills/bootstrap-project.md",
+    "skills/manage-runtime.md",
+    "skills/test-gap.md"
+  ],
+  "keywords": ["ai-runtime", "knowledge", "graph", "test-coverage", "refactoring"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xxx/ai-runtime"
+  }
+}
