@@ -108,7 +108,7 @@ Write-Host "=== GRAPHIFY (full + LLM) ==="
 
 try {
     if (-not $env:DEEPSEEK_API_KEY) {
-        $env:DEEPSEEK_API_KEY = "sk-3facbf6bbbbc425499adef7f1b9038e5"
+        Write-Log "graphify: DEEPSEEK_API_KEY not set — set it via `setx DEEPSEEK_API_KEY your-key` or pass it inline"
     }
     Push-Location $SourcePath
     graphify extract . --backend deepseek --out "$ProjectDir\knowledge" 2>&1 | Tee-Object -FilePath "$ProjectDir\logs\graph\$Now-graphify.log" | Out-Host
