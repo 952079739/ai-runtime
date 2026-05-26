@@ -95,6 +95,21 @@ echo ""
 echo "=== GRAPHIFY (full + LLM) ==="
 
 if command -v graphify &> /dev/null; then
+    if [ -z "$DEEPSEEK_API_KEY" ]; then
+        echo ""
+        echo "============================================"
+        echo "  DEEPSEEK_API_KEY is not set"
+        echo "  Run this in terminal, then retry:"
+        case "$(uname -s)" in
+            Darwin*) echo "  export DEEPSEEK_API_KEY=your-key" ;;
+            Linux*)  echo "  export DEEPSEEK_API_KEY=your-key" ;;
+            MINGW*|MSYS*|CYGWIN*) echo "  setx DEEPSEEK_API_KEY your-key" ;;
+            *)       echo "  export DEEPSEEK_API_KEY=your-key" ;;
+        esac
+        echo "============================================"
+        echo ""
+        exit 1
+    fi
     pushd "$SOURCE_PATH" > /dev/null
     graphify extract . --backend deepseek --out "$PROJECT_DIR/knowledge" 2>&1 | tee -a "$PROJECT_DIR/logs/graph/$NOW-graphify.log"
     popd > /dev/null
