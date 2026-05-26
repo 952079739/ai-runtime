@@ -52,23 +52,33 @@ Run: `graphify extract --help`
 | kimi | MOONSHOT_API_KEY |
 | ollama | (local, no key needed) |
 
-Ask user: "Which backend? (and API key if applicable)"
+Ask: "Which backend do you want to use?"
 
-After user responds, write the key into the build script:
+After user picks a backend (e.g. deepseek), do NOT ask for the key. Instead, tell the user to set the environment variable themselves:
 
-**Windows (full_build.ps1)** — insert before the graphify call:
-```powershell
-if (-not $env:DEEPSEEK_API_KEY) {
-    $env:DEEPSEEK_API_KEY = "sk-xxx"
-}
+**Windows:**
+```
+Please set the environment variable, then reply "done":
+
+  setx DEEPSEEK_API_KEY your-key
+
+(Close and reopen this terminal, then re-run /bootstrap)
 ```
 
-**Mac/Linux (full_build.sh)** — insert before the graphify call:
-```bash
-export DEEPSEEK_API_KEY="sk-xxx"
+**Mac/Linux:**
+```
+Please set the environment variable, then reply "done":
+
+  export DEEPSEEK_API_KEY=your-key
+
+(Then re-run /bootstrap in the same terminal)
 ```
 
-Update config:
+Replace `DEEPSEEK_API_KEY` with the correct variable name from the table above, and the command based on OS.
+
+Wait for the user to reply "done" or confirm, then re-test with `graphify extract --help` to verify it works. If `graphify extract --help` now succeeds, proceed.
+
+Update config (backend only, no key):
 ```json
 { "storage_root": "...", "llm_backend": "deepseek" }
 ```
@@ -112,6 +122,6 @@ Show summary:
 ## Constraints
 
 - NEVER create files inside the source git repo (except CLAUDE.md and .gitignore)
-- API keys live ONLY in build scripts (outside git repo)
+- NEVER ask for or store API keys — users set them via environment variables
 - All knowledge artifacts go under `{storage_root}/projects/{ProjectID}/`
 - Read `{storage_root}/projects/{ProjectID}/config/runtime.json` for source_path before any build
