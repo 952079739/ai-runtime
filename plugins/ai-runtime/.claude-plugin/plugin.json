@@ -1,0 +1,10 @@
+{
+  "name": "ai-runtime",
+  "version": "1.0.0",
+  "description": "AI-Runtime: automated project knowledge infrastructure. GitNexus + Graphify dual-engine builds, per-file summaries, task delta context, test gap analysis, and structured refactoring workflow.",
+  "author": {
+    "name": "AI-Runtime",
+    "email": "952079739@qq.com"
+  },
+  "category": "developer-tools"
+}
